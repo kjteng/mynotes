@@ -4,7 +4,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Using TJsonTools object</title>
   </head>
-  <body style="                               background-color: #ffffcc;">
+  <body style="                                           background-color: #ffffcc;">
     <p></p>
     <h1><u><b>Using TJsonTools object</b></u> <br>
     </h1>
@@ -28,9 +28,22 @@
           TJSonNode.Create;</span></li>
       <li>Load json data by one of the following methods: <br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (i)&nbsp; Assignment of json string e.g.
-        js1.AsJson :='[10, 20, 30]' <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ii) Loading data from file, eg
-        js1.LoadFromFile('data.txt') </li>
+        js1.AsJson := '{"AA":11,"BB":"Two","CC":[33,
+        44],"DD":["txt",123,"str"]}'<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ii) Loading data from file containing
+        json string, eg js1.LoadFromFile('data.txt')</li>
+      <li>Each item of an array/object is a child node of the parent
+        array/object node. Child(n) refers to item n of an object/array. For
+        example, <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(0) is the first element of the
+        root node ("AA") which is a base type node i.e. has no child as it is
+        neither an array nor object;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(2) is the third element of the
+        root ("CC");<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(2).Child(0)is the first element
+        of&nbsp; Child(2) i.e. a base type node having value of 33;<br>
+        We may assign sub-node to a node variable e.g. node1 :=
+        jst1.Child(0).Child(1).Child(1)....</li>
     </ol>
     <p><b><br>
       </b></p>
@@ -38,46 +51,64 @@
     <p>In JsonTool, each piece of data in a node is stored in a child node.<br>
       A node in json may be:<br>
       &nbsp;&nbsp;&nbsp; (i)&nbsp; container type i.e. array or object type<br>
-      &nbsp;&nbsp;&nbsp; (ii) based type i.e. Number, string, boolean, or null
+      &nbsp;&nbsp;&nbsp; (ii) based type i.e. Number, String, Boolean, or Null
       type</p>
     We can access the value of a node using value property of a node<br>
     <p> As the each element of a container node is stored in a separate child
       node, it shall be accessed via Child(xx).value where xx is the index
       number or object name of the node, For example :-<br>
-      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; js1.Child(0).Value&nbsp; // return
-      '11'<br>
-      &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; js1.Child(0).Value&nbsp; // return
-      '11'</p>
-    <p> Take note that value property is of string data within double quotes. To
-      get the value in the original type, we can use the AsNumber, AsBoolean,
-      and AsString property which will return the value, respectively,&nbsp; as
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;<span style="color: #990000;">&nbsp;
+        js1.Child(0).Value</span>&nbsp; // return 11 (string type)<br>
+      &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<span style="color: #990000;">&nbsp;
+        js1.Child(1).Value&nbsp;</span> // return "Two" (string type)</p>
+    <p> As shown above, the value property: (i) returns the string value ('11')
+      of the node if it is nkNumber type; (ii) returns a double quoted string
+      ('"Two"') if&nbsp; it is nkString type. </p>
+    <p>To get the value in pascal type, we can use the AsNumber, AsBoolean, and
+      AsString property which will return the value, respectively,&nbsp; as
       double, boolean or string (within single quote) type. For example, <br>
       &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;js1.Child(0).AsNumber&nbsp; //
-      returns 11<br>
-      &nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;js2.Child(1).Child('Name').AsString&nbsp; //return
-      'Mike'</p>
+      returns 11 (double type)<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;js2.Child(1)AsString&nbsp; //return
+      'Two'</p>
     <p><b><span style="color: #ff6666;">BE CAREFUL </span></b>of the AsXXX
-      properties: If the node is not of XXX type, its value will be cleared and
-      its type changed to XXX&nbsp; whenever AsXXX is called. Say the a
-      TJsonNode has an integer value of 123, then in the following example&nbsp;
-      the AsString will first converted to node to nkString (string type) with
-      null value (because it is originally not nkString type). Thus ss is equal
-      to '' after assignment. <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ss := node.AsString; </p>
+      properties: If the node is not of XXX type (in the Json), AsXXX will be
+      cleared the node value and change its type to XXX type. Using the same
+      example above, js1.Child(0) originally has an integer value of 123,&nbsp;
+      calling js1.Child (0).AsStinrg will convert the node to nkString (string
+      type) with null value (because it is originally not nkString type), as
+      follows:-</p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #990000;">ss
+        :='abcd'; </span>//ss is a string variable <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #990000;">ii :=
+        js1.Child(0).AsNumber;&nbsp; </span>// ii equals to 11 (double)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #660000;"><span style="color: #990000;">ss
+          := js1.Child(0).AsString</span>;</span>&nbsp; // ss equals to ''&nbsp;
+      now and js1.Child(0) became a nkString node with null value<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #990000;"> ii :=
+        js1.Child(0).AsNumber;</span> // ii equals to 0 now and js1.Child(0)
+      became bkNumber node having value of 0</p>
     <br>
     <b>II. Write/Set node value</b> <br>
     <p> Node value can be changed/assigned as follows: </p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(0).AsNumber := 999; <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(0).AsString := 'xyz';<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(0).AsBoolean:= false;</p>
-    <p>AsNumber, AsString, AsBoolean will connvert/clear&nbsp; the node to
-      nkNumber. nkString. nkBoolean respectively if the original node is not of
-      the same kind (data type).<br>
-    </p>
-    <p style="text-align: right;"> <a href="index.html" title="Top"><img src="top.png"
-          alt="Top of page" style="align:right;width:22px;height:22px;"> Top</a>
-      <a href="index.html" title="Back to index page"><img src="back_main.png" alt="Back to index page"
-          style="align:right;width:20px;height:20px;"> Index</a></p>
+    <p>&nbsp;&nbsp;&nbsp;<span style="color: #990000;">&nbsp;&nbsp;
+        js1.Child(0).AsNumber := 999; <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(0).AsString := 'xyz';<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(0).AsBoolean:= false;</span></p>
+    <p>AsNumber, AsString, AsBoolean will connvert&nbsp; the node to nkNumber.
+      nkString. nkBoolean type respectively before the assignment.</p>
+    <br>
+    <b>III. Findnode<br>
+    </b>
+    <p>We can refer a node by path using Find method. e.g. js1.Find('/CC/0') is
+      the same as js1.Child(2).Child(0). This will return Nil if the path node
+      does not exist. Alternatively, use Find(path, x) to assign the result to
+      x, and return True if the path node exists (False if otherwise). e.g.
+      js1.Find('/CC/0', node1).</p>
+    <p style="text-align: right;"><b> </b><a href="index.html" title="Top"><img
+          src="top.png" alt="Top of page" style="align:right;width:22px;height:22px;">
+        Top</a> <a href="index.html" title="Back to index page"><img src="back_main.png"
+          alt="Back to index page" style="align:right;width:20px;height:20px;">
+        Index</a></p>
   </body>
 </html>
