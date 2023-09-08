@@ -4,17 +4,16 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Using TJsonTools object</title>
   </head>
-  <body style="                                           background-color: #ffffcc;">
+  <body style="                                                   background-color: #ffffcc;">
     <p></p>
     <h1><u><b>Using TJsonTools object</b></u> <br>
     </h1>
     <p></p>
     <p><b>Introduction</b><br>
-      TJsonTools is a thirdpary class that can be used to access/manipulate json
-      data. I prefer use this component instead of fcl-json (come with the
-      freepascal installation) because it is simpler and reasonably fast. In
-      addition, all the related code in stored in ONE pascal unit, i.e.
-      JSonTools.pas.</p>
+      TJsonTools is a third party library that can be used to access/manipulate
+      json data. I prefer use this component instead of fcl-json that comes with
+      the freepascal installation, because it is simpler and fast. In addition,
+      all the related codes are stored in ONE file, i.e. JSonTools.pas.</p>
     <p> <b>I. Getting started </b></p>
     <!--
     <p style="border-width:1px; border-style:solid; padding: 1em;"> var js1: TJSonNode; <br>      js1 := TJSonNode.Create; </p>    -->
@@ -28,26 +27,44 @@
           TJSonNode.Create;</span></li>
       <li>Load json data by one of the following methods: <br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (i)&nbsp; Assignment of json string e.g.
-        js1.AsJson := '{"AA":11,"BB":"Two","CC":[33,
-        44],"DD":["txt",123,"str"]}'<br>
+        <span style="color: #990000;">js1.AsJson :=
+          '{"AA":.1,"BB":"Two","CC":[33, 44],"DD":["txt",123,"str"]}'</span><br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ii) Loading data from file containing
-        json string, eg js1.LoadFromFile('data.txt')</li>
-      <li>Each item of an array/object is a child node of the parent
-        array/object node. Child(n) refers to item n of an object/array. For
-        example, <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(0) is the first element of the
-        root node ("AA") which is a base type node i.e. has no child as it is
-        neither an array nor object;<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(2) is the third element of the
-        root ("CC");<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(2).Child(0)is the first element
-        of&nbsp; Child(2) i.e. a base type node having value of 33;<br>
-        We may assign sub-node to a node variable e.g. node1 :=
-        jst1.Child(0).Child(1).Child(1)....</li>
+        json string, e.g. <span style="color: #990000;">js1.LoadFromFile('data.txt')</span></li>
+      <li>Each item of an array/object is a JsonNode ('node'). Except for the
+        root, a node is a child node of its parent array/object node.<br>
+      </li>
     </ol>
-    <p><b><br>
+    <p><b>III. Accessing method: Child(n), Find(path) and Find(path, node)<br>
       </b></p>
-    <p><b>II. Read node value</b></p>
+    <ol>
+      <li>Each node in Json is a child node of its&nbsp; parent (which is either
+        a node of array or object type). A node may be accessed by Child(n)
+        method where n is the index of its position in the array/object. For
+        example,&nbsp;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #990000;">js1.Child(0)</span>
+        is the first element of the root node ("AA")<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #990000;">js1.Child(2)</span>
+        is the third element of the root ("CC");<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #990000;">js1.Child(2).Child(0)</span>
+        is the first element of&nbsp; Child(2) i.e. a base type node having
+        value of 33;<br>
+        We may assign sub-node to a node variable e.g. <span style="color: #990000;">node1
+          := jst1.Child(0).Child(1).Child(1)</span>....<br>
+        <sub style="color: #000099;">(Note: js1.Child(0)is a node that has no
+          child and it is known as "base type node" i.e.it is neither an array
+          nor object) </sub></li>
+      <br>
+      <li>A node can also be referred to by path name using Find method. e.g.<span
+          style="color: #990000;"> node1 := js1.Find('/CC/0') </span>is the
+        same as js1.Child(2).Child(0). Find method&nbsp; returns Nil if the path
+        node does not exist. Alternatively, we may call the overload method
+        Find(path, node) which assign the path node to x, and return True if the
+        node exists (False if otherwise). e.g. <span style="color: #990000;">js1.Find('/CC/0',
+          node1)</span>.</li>
+    </ol>
+    <p></p>
+    <p><b>III. Read node value</b></p>
     <p>In JsonTool, each piece of data in a node is stored in a child node.<br>
       A node in json may be:<br>
       &nbsp;&nbsp;&nbsp; (i)&nbsp; container type i.e. array or object type<br>
@@ -67,10 +84,10 @@
     <p>To get the value in pascal type, we can use the AsNumber, AsBoolean, and
       AsString property which will return the value, respectively,&nbsp; as
       double, boolean or string (within single quote) type. For example, <br>
-      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;js1.Child(0).AsNumber&nbsp; //
-      returns 11 (double type)<br>
-      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;js2.Child(1)AsString&nbsp; //return
-      'Two'</p>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<span style="color: #990000;">js1.Child(0).AsNumber</span>&nbsp;
+      // returns 11 (double type)<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<span style="color: #990000;">js2.Child(1)AsString&nbsp;</span>
+      //return 'Two'</p>
     <p><b><span style="color: #ff6666;">BE CAREFUL </span></b>of the AsXXX
       properties: If the node is not of XXX type (in the Json), AsXXX will be
       cleared the node value and change its type to XXX type. Using the same
@@ -89,7 +106,7 @@
         js1.Child(0).AsNumber;</span> // ii equals to 0 now and js1.Child(0)
       became bkNumber node having value of 0</p>
     <br>
-    <b>II. Write/Set node value</b> <br>
+    <b>IV. Write/Set node value</b> <br>
     <p> Node value can be changed/assigned as follows: </p>
     <p>&nbsp;&nbsp;&nbsp;<span style="color: #990000;">&nbsp;&nbsp;
         js1.Child(0).AsNumber := 999; <br>
@@ -97,18 +114,8 @@
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; js1.Child(0).AsBoolean:= false;</span></p>
     <p>AsNumber, AsString, AsBoolean will connvert&nbsp; the node to nkNumber.
       nkString. nkBoolean type respectively before the assignment.</p>
-    <br>
-    <b>III. Findnode<br>
-    </b>
-    <p>We can refer a node by path using Find method. e.g. js1.Find('/CC/0') is
-      the same as js1.Child(2).Child(0). This will return Nil if the path node
-      does not exist. Alternatively, use Find(path, x) to assign the result to
-      x, and return True if the path node exists (False if otherwise). e.g.
-      js1.Find('/CC/0', node1).</p>
-    <p style="text-align: right;"><b> </b><a href="index.html" title="Top"><img
-          src="top.png" alt="Top of page" style="align:right;width:22px;height:22px;">
-        Top</a> <a href="index.html" title="Back to index page"><img src="back_main.png"
-          alt="Back to index page" style="align:right;width:20px;height:20px;">
+    <p style="text-align: right;"><b> </b> <a href="index.html" title="Index"><img
+          src="back_main.png" alt="Back to Index page" style="align:right;width:25px;height:25px;">
         Index</a></p>
   </body>
 </html>
